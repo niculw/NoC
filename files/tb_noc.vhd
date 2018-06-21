@@ -6,7 +6,7 @@
 -- Author      : Nicolai Weis Hansen <s154662@student.dtu.dk>
 -- Company     : DTU
 -- Created     : Mon Jun 18 11:50:14 2018
--- Last update : Wed Jun 20 22:50:36 2018
+-- Last update : Thu Jun 21 22:12:52 2018
 -- Platform    : Nexys 4DDR
 -- Standard    : <VHDL-2008>
 -------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ begin
 		valid_in_local(0,0) <= '0';
 		data_in_local(0,0)  <= (others => '0');
 		wait until test_sim = 1;
-		report "Test 0 passed" severity failure;
+		report "Test 0 passed" severity error;
 		--test_sim <= '0';
 		--wait for 10 * TbPeriod;
 		
@@ -127,7 +127,7 @@ begin
 		valid_in_local(0,0) <= '0';
 		data_in_local(0,0)  <= (others => '0');
 		wait until test_sim = 2;
-		report "Test 1 passed" severity failure;
+		report "Test 1 passed" severity error;
 		
 		------------------------------------------------------------------------
 		-- Test 2 input
