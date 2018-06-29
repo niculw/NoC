@@ -37,6 +37,61 @@ current_port = ""
 
 serial_available = False  # If false, the list of serials is empty
 serial_free = True
+
+
+###########################################################
+help_text = """Serial interface help
+
+-Purpose
+This application allows for communication with the Network on Chip, NoC,
+using the serial port to transfer packets.
+
+-Usage
+This app is divided into 5 sections: 1) Setup serial
+connection to the FPGA board, 2) Select destination, 3) Add data,
+4) Complete packet to be sent to NoC, and 5) Packet recieved from NoC.
+In the following the functionality is explained.
+
+1) Setup serial connection to the FPGA board:
+Here the serial port of which the FPGA is connected, is selected.
+If unsure whether the correct port is selected, the port can be tested
+by pressing "Test port". This will then tell you if the correct port
+is selected.
+
+2) Select Destination:
+Here a destination for the packet is selected. This has a layout as a
+4x4 matrix with position 0,0 being the starting point.
+
+3) Add data:
+Here data is added to the 2 flits following the route flit. This data
+MUST be formatted as a hex number no longer than 4 bytes!
+Format as such: "0x12345678"
+Number can be less than 4 bytes!
+When a destination and data flits are selected, a packet can be made
+by pressing the "Make Packet" button.
+
+4) Complete packet to be sent to NoC
+When pressing the "Make Packet" button in section 3, all spaces named
+"NONE" will be populated by the selected data. The packet can now be
+sent to the NoC by pressing "Send Data"
+
+5) Packet recieved from NoC
+This section will populate all spaces named "NONE" when a packet has been
+read from the network and processed. 
+Here you can check whether the recieved destination and data is correct.
+
+
+"""
+
+about_text = """Application developed by Nicolai Weis Hansen
+for the bachelor thesis "NoC in FPGA" at Technical University of Denmark.
+
+Version 1.0 - 2018
+
+To report bugs, contact: s154662@student.dtu.dk
+
+The GUI was developed using appJar."""
+
 #########################################
 
 
@@ -308,6 +363,39 @@ def makePacket(button):
 # grid
 
 
+def showHelp():
+    global help_app
+    if help_app is not None:
+        help_app.destroy()
+        help_app = None
+    help_app = tk.Toplevel()  # tk.Tk()#gui("Show figure")#S, "500x500")
+    help_app.title("Serial interface help")
+    help_app.resizable(False, False)
+    S = tk.Scrollbar(help_app)
+    T = tk.Text(help_app, height=25, width=60)
+    S.pack(side=tk.RIGHT, fill=tk.Y)
+    T.pack(side=tk.LEFT, fill=tk.Y)
+    S.config(command=T.yview)
+    T.config(yscrollcommand=S.set)
+    T.insert(tk.END, help_text)
+    T.configure(state="disabled")
+    help_app.mainloop()
+    return
+
+
+def bottom_press(button):
+    if button == "Help":
+        showHelp()
+        return
+    if button == "About":
+        app.infoBox("About", about_text)
+        return
+    if button == "Exit":
+        app.stop()
+        return
+    return
+
+
 def button00(button):
 
     return
@@ -572,8 +660,13 @@ app.addLabel("resultlabel", "Result: ", row, 0)
 app.addLabel("dest", "NONE", row, 1)
 app.addLabel("recdata1", "NONE", row, 2)
 app.addLabel("recdata2", "NONE", row, 3)
+# Bottom line
 row = row + 1
 app.addHorizontalSeparator(row, 0, 4)
+
+# Bottom buttons
+row = row + 1
+app.addButtons(["Help", "About", "Exit"], bottom_press, row, 0, 4)
 
 # done
 refreshSerialList(None)
